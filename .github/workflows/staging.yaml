@@ -47,7 +47,7 @@ jobs:
         uses: ./ssf-actions/update-yaml-value
         with:
           repository: ${{ secrets.UPDATE_REPO }}
-          file-path: fleet/public-cluster/hauler-docs/values.yaml
+          file-path: fleet/public-cluster/hauler-docs/helm/values.yaml
           yaml-path: .image.tag
           value: ${{ steps.build.outputs.version }}
           ssh-deploy-key: ${{ secrets.UPDATE_KEY }}
