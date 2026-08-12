@@ -29,7 +29,18 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build images
+        id: build
         run: |
           VERSION=$(git rev-parse --short "$GITHUB_SHA")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           docker buildx create --name multiarch --driver docker-container --use
           docker buildx build --platform linux/amd64 -f image-build/Containerfile --push -t ghcr.io/${{ github.repository }}:$VERSION .
+
+      - name: Update hauler-docs image tag in ssf
+        uses: atoy3731/ssf-actions/update-yaml-value@main
+        with:
+          repository: ${{ secrets.UPDATE_REPO }}
+          file-path: fleet/public-cluster/hauler-docs/values.yaml
+          yaml-path: .image.tag
+          value: ${{ steps.build.outputs.version }}
+          ssh-deploy-key: ${{ secrets.UPDATE_KEY }}
