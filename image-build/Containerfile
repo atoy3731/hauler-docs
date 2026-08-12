@@ -12,4 +12,4 @@ COPY --from=build /app/build /srv/www/htdocs
 RUN chmod -R a+rX /srv/www/htdocs
 EXPOSE 8080
 USER 10001
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-e", "/dev/stderr", "-g", "daemon off;"]
